@@ -1,1 +1,14 @@
-
+[
+  {
+    "name": "Lauren Betts",
+    "team": "Rookie",
+    "position": "Center",
+    "number": 0,
+    "ppg": 19.2,
+    "rpg": 9.8,
+    "apg": 2.1,
+    "spg": 0.7,
+    "bpg": 2.5,
+    "tov": 2.4
+  }
+]

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WNBA Fantasy War Room</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-slate-950">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const players = [
+      { name: "A'ja Wilson", ppg: 23.4, rpg: 10.2, apg: 2.3, stl: 1.6, blk: 2.2, threes: 0.6, tov: 1.7 },
+      { name: "Angel Reese", ppg: 14.7, rpg: 12.6, apg: 3.7, stl: 1.4, blk: 0.6, threes: 0.2, tov: 2.2 },
+      { name: "Paige Bueckers", ppg: 19.2, rpg: 4.0, apg: 5.1, stl: 1.4, blk: 0.4, threes: 1.9, tov: 2.6 },
+      { name: "Breanna Stewart", ppg: 18.3, rpg: 6.5, apg: 3.7, stl: 1.4, blk: 1.3, threes: 1.4, tov: 1.8 },
+      { name: "Sabrina Ionescu", ppg: 18.2, rpg: 4.2, apg: 5.6, stl: 1.1, blk: 0.3, threes: 2.8, tov: 2.4 },
+      { name: "Lauren Betts (2026 Prospect)", ppg: 18.0, rpg: 9.5, apg: 1.8, stl: 0.8, blk: 2.1, threes: 0, tov: 2.2 }
+    ];
+
+    function fantasyScore(p) {
+      return (
+        p.ppg +
+        p.rpg * 1.2 +
+        p.apg * 1.5 +
+        p.stl * 3 +
+        p.blk * 3 +
+        p.threes -
+        p.tov
+      ).toFixed(1);
+    }
+
+    function App() {
+      const [drafted, setDrafted] = React.useState([]);
+      const [search, setSearch] = React.useState("");
+
+      const toggleDrafted = (name) => {
+        setDrafted((prev) =>
+          prev.includes(name)
+            ? prev.filter((x) => x !== name)
+            : [...prev, name]
+        );
+      };
+
+      const filtered = players
+        .filter((p) =>
+          p.name.toLowerCase().includes(search.toLowerCase())
+        )
+        .sort((a, b) => fantasyScore(b) - fantasyScore(a));
+
+      return (
+        <div className="min-h-screen text-white p-8">
+          <h1 className="text-5xl font-bold mb-6">WNBA Fantasy War Room</h1>
+
+          <input
+            className="w-full p-3 rounded-xl text-black mb-6"
+            placeholder="Search player..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+
+          <div className="grid gap-4">
+            {filtered.map((player, index) => (
+              <div key={player.name} className={`p-5 rounded-2xl ${drafted.includes(player.name) ? "bg-slate-700" : "bg-white text-black"}`}>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-2xl font-bold">#{index + 1} {player.name}</h2>
+                    <p>PPG: {player.ppg} | RPG: {player.rpg} | APG: {player.apg}</p>
+                    <p>Fantasy Score/Game: {fantasyScore(player)}</p>
+                  </div>
+                  <button
+                    onClick={() => toggleDrafted(player.name)}
+                    className="bg-indigo-600 text-white px-4 py-2 rounded-xl"
+                  >
+                    {drafted.includes(player.name) ? "Undo" : "Drafted"}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
